@@ -21,6 +21,8 @@
 
 package com.viromedia.bridge.component;
 
+import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -41,6 +43,7 @@ public class VRTVRSceneNavigator extends VRT3DSceneNavigator {
     // in order to prevent the disabling of low persistence mode when entering 360 mode.
     private boolean mNeedsSetVrMode = true;
     private boolean mVrMode = true;
+    private int mPreferredOrientation;
 
     private static class StartupListenerGVR implements ViroViewGVR.StartupListener {
 
@@ -48,6 +51,7 @@ public class VRTVRSceneNavigator extends VRT3DSceneNavigator {
 
         public StartupListenerGVR(VRTVRSceneNavigator navigator) {
             mNavigator = new WeakReference<VRTVRSceneNavigator>(navigator);
+
         }
 
         @Override
@@ -100,6 +104,7 @@ public class VRTVRSceneNavigator extends VRT3DSceneNavigator {
                 public void run() {
                     navigator.mGLInitialized = true;
                     navigator.setViroContext();
+
                 }
             });
         }
@@ -116,6 +121,7 @@ public class VRTVRSceneNavigator extends VRT3DSceneNavigator {
     }
 
     protected ViroView createViroView(ReactContext reactContext) {
+        mPreferredOrientation = reactContext.getCurrentActivity().getRequestedOrientation();
         switch (mPlatform) {
             case OVR_MOBILE:
                 return new ViroViewOVR(reactContext.getCurrentActivity(),
@@ -136,7 +142,12 @@ public class VRTVRSceneNavigator extends VRT3DSceneNavigator {
     @Override
     public void onPropsSet() {
         if (mNeedsSetVrMode) {
+            // Monkey patch to restore orientation to activity preferred orientation when GVR is
+            // running in non VR mode
+            Activity activity = (Activity) mViroView.getContext();
             mViroView.setVRModeEnabled(mVrMode);
+            activity.setRequestedOrientation(mVrMode ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : mPreferredOrientation);
+
             mNeedsSetVrMode = false;
         }
     }

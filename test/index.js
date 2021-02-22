@@ -152,8 +152,8 @@ FlatListItemSeparator = () => {
     super();
 
     var sharedProps = {
-      apiKey:"7EEDCB99-2C3B-4681-AE17-17BC165BF792",
-    }
+    };
+    
     console.log("Config.FLAVOR - " + Config.VR_PLATFORM);
     this.state = {
       navigatorType : Config.VR_PLATFORM == "OVR_MOBILE" ? VR_NAVIGATOR_TYPE : UNSET,
