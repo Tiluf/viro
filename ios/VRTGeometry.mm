@@ -40,7 +40,7 @@
         _geometryNeedsUpdate = YES;
         [self node]->setGeometry(_geometry);
     }
-    
+
     return self;
 }
 
@@ -85,7 +85,7 @@
             RCTLogWarn(@"ViroGeometry %@ requires %d coordinates per point, but was given a point with %d coordinates",
                        type, coordsPerPoint, (int) [pointArray count]);
         }
-        
+
         if (coordsPerPoint > 0) {
             nativePoints.push_back([[pointArray objectAtIndex:0] floatValue]);
         }
@@ -112,11 +112,11 @@
         RCTLogError(@"Error: Attempted to construct a geometry with no vertices!");
         return;
     }
-    
+
     std::vector<float> vertices = [self convertFloatArray:_vertices numCoordinatesPerPoint:3 type:@"vertices"];
     int numVertices = (int) vertices.size() / 3;
     std::shared_ptr<VROData> vertexData = std::make_shared<VROData>((void *) vertices.data(), vertices.size() * sizeof(float));
-    
+
     std::vector<std::shared_ptr<VROGeometrySource>> sources;
     sources.push_back(std::make_shared<VROGeometrySource>(vertexData,
                                                           VROGeometrySourceSemantic::Vertex,
@@ -125,11 +125,11 @@
                                                           sizeof(float),
                                                           0,
                                                           sizeof(float) * 3));
-    
+
     std::vector<float> normals = [self convertFloatArray:_normals numCoordinatesPerPoint:3 type:@"normals"];
     int numNormals = (int) normals.size() / 3;
     std::shared_ptr<VROData> normalData = std::make_shared<VROData>((void *) normals.data(), normals.size() * sizeof(float));
-    
+
     sources.push_back(std::make_shared<VROGeometrySource>(normalData,
                                                           VROGeometrySourceSemantic::Normal,
                                                           numNormals,
@@ -137,11 +137,11 @@
                                                           sizeof(float),
                                                           0,
                                                           sizeof(float) * 3));
-    
+
     std::vector<float> texcoords = [self convertFloatArray:_texcoords numCoordinatesPerPoint:2 type:@"texcoords"];
     int numTexcoords = (int) texcoords.size() / 2;
     std::shared_ptr<VROData> texcoordData = std::make_shared<VROData>((void *) texcoords.data(), texcoords.size() * sizeof(float));
-    
+
     sources.push_back(std::make_shared<VROGeometrySource>(texcoordData,
                                                           VROGeometrySourceSemantic::Texcoord,
                                                           numTexcoords,
@@ -150,16 +150,16 @@
                                                           0,
                                                           sizeof(float) * 2));
     _geometry->setSources(sources);
-    
+
     std::vector<std::shared_ptr<VROGeometryElement>> elements;
     for (int i = 0; i < [_triangleIndices count]; i++) {
         NSArray<NSNumber *> *submesh = [_triangleIndices objectAtIndex:i];
-        
+
         std::vector<int> triangles = [self convertIntArray:submesh];
         int numIndices = (int) triangles.size();
         int indexSize = sizeof(int);
         std::shared_ptr<VROData> indicesData = std::make_shared<VROData>((void *) triangles.data(), numIndices * indexSize);
-        
+
         elements.push_back(std::make_shared<VROGeometryElement>(indicesData,
                                                                 VROGeometryPrimitiveType::Triangle,
                                                                 VROGeometryUtilGetPrimitiveCount(numIndices, VROGeometryPrimitiveType::Triangle),

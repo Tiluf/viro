@@ -40,17 +40,17 @@ platform :ios do
   desc "Build react, ViroReact frameworks"
   lane :release_react_viro_lib do
     begin
-      
+
       Dir.chdir("../") do
         sh("cp -r /var/tmp/build_intermediates/react_viro_kit/ViroRenderer/ ../../ios/dist/ViroRenderer/")
          # build React scheme -iphoneSimulator
-         sh("xcodebuild -workspace ViroExample/ViroExample.xcworkspace/ -scheme React -configuration Release -sdk iphonesimulator -arch x86_64| xcpretty -c")
+         sh("xcodebuild -workspace ViroExample.xcworkspace/ -scheme React -configuration Release -sdk iphonesimulator -arch x86_64| xcpretty -c")
          # build ViroReact scheme -iphoneSimulator
-         sh("xcodebuild -workspace ViroExample/ViroExample.xcworkspace/ -scheme ViroReact -configuration Release -sdk iphonesimulator -arch x86_64| xcpretty -c")
+         sh("xcodebuild -workspace ViroExample.xcworkspace/ -scheme ViroReact -configuration Release -sdk iphonesimulator -arch x86_64| xcpretty -c")
          # build React scheme -iphoneOS
-         sh("xcodebuild -workspace ViroExample/ViroExample.xcworkspace/ -scheme React -configuration Release -sdk iphoneos| xcpretty -c")
+         sh("xcodebuild -workspace ViroExample.xcworkspace/ -scheme React -configuration Release -sdk iphoneos| xcpretty -c")
          # build ViroReact scheme -iphoneOS
-         sh("xcodebuild -workspace ViroExample/ViroExample.xcworkspace/ -scheme ViroReact -configuration Release -sdk iphoneos| xcpretty -c")
+         sh("xcodebuild -workspace ViroExample.xcworkspace/ -scheme ViroReact -configuration Release -sdk iphoneos| xcpretty -c")
 
        end
      rescue => exception
@@ -60,13 +60,13 @@ platform :ios do
 
   lane :release_react_viro_static_lib do
     begin
-      
+
       Dir.chdir("../") do
-         
+
          # build ViroReact_static_lib scheme -iphoneSimulator
-         sh("xcodebuild -workspace ViroExample/ViroExample.xcworkspace/ -scheme ViroReact_static_lib -configuration Release -sdk iphonesimulator -arch x86_64| xcpretty -c")
+         sh("xcodebuild -workspace ViroExample.xcworkspace/ -scheme ViroReact_static_lib -configuration Release -sdk iphonesimulator -arch x86_64| xcpretty -c")
          # build ViroReact scheme -iphoneOS
-         sh("xcodebuild -workspace ViroExample/ViroExample.xcworkspace/ -scheme ViroReact_static_lib -configuration Release -sdk iphoneos| xcpretty -c")
+         sh("xcodebuild -workspace ViroExample.xcworkspace/ -scheme ViroReact_static_lib -configuration Release -sdk iphoneos| xcpretty -c")
 
        end
      rescue => exception
@@ -77,10 +77,10 @@ platform :ios do
   lane :release_react_viro_lib_clean do
     Dir.chdir("../") do
       # clean all schemes
-         sh("xcodebuild -workspace ViroExample/ViroExample.xcworkspace/ -scheme React -configuration Release clean | xcpretty -c")
-         sh("xcodebuild -workspace ViroExample/ViroExample.xcworkspace/ -scheme ViroReact -configuration Release clean | xcpretty -c")
-         sh("xcodebuild -workspace ViroExample/ViroExample.xcworkspace/ -scheme ViroReact_static_lib -configuration Release clean | xcpretty -c")
-         sh("xcodebuild -workspace ViroExample/ViroExample.xcworkspace/ -scheme ViroExample -configuration Release clean | xcpretty -c")
+         sh("xcodebuild -workspace ViroExample.xcworkspace/ -scheme React -configuration Release clean | xcpretty -c")
+         sh("xcodebuild -workspace ViroExample.xcworkspace/ -scheme ViroReact -configuration Release clean | xcpretty -c")
+         sh("xcodebuild -workspace ViroExample.xcworkspace/ -scheme ViroReact_static_lib -configuration Release clean | xcpretty -c")
+         sh("xcodebuild -workspace ViroExample.xcworkspace/ -scheme ViroExample -configuration Release clean | xcpretty -c")
     end
   end
 
@@ -88,16 +88,16 @@ platform :ios do
     begin
       increment_build_number(
         build_number: latest_testflight_build_number + 1,
-        xcodeproj: "./ViroExample/ViroExample.xcodeproj"
+        xcodeproj: "./ViroExample.xcodeproj"
       )
       cert
       sigh(force: true)
       gym(scheme: "ViroExample_archive",
-                workspace: "./ViroExample/ViroExample.xcworkspace",
+                workspace: "./ViroExample.xcworkspace",
                 configuration: "Release",
                 clean: true,
                 output_directory: "./build",
-                output_name: "ViroExample.ipa") 
+                output_name: "ViroExample.ipa")
        pilot(username: "manish@viromedia.com",
              ipa: "./build/ViroExample.ipa",
              skip_waiting_for_build_processing: true)
