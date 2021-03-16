@@ -34,7 +34,6 @@
 #include "VROEventDelegate.h"
 #include "VROHitTestResult.h"
 
-
 class VROInputPresenterCardboardiOS : public VROInputPresenter {
 public:
     
